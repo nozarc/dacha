@@ -23,7 +23,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '';
+$protocol=((!empty($_SERVER['HTTPS'])&& $_SERVER['HTTPS']!='off')||$_SERVER['SERVER_PORT']==443)?'https://':'http://';
+$config['base_url'] = $protocol.$_SERVER['HTTP_HOST'].str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
+/*
+| the state of this application. change it to 'development' when this application under development, and dont forget to change it to 'production' if this application is ready to use
+*/
+$config['state']='development';
+/*
+| your template folder, it will be usefull for determine your template folder and its view page
+*/
+$config['template_dir']		= FCPATH.'template/';
+$config['template_path']	= $config['base_url'].'template/';
+$config['template']			= 'AdminLTE';
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +46,7 @@ $config['base_url'] = '';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -378,7 +389,7 @@ $config['encryption_key'] = '';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'ci_session';
+$config['sess_cookie_name'] = 'ci_session_';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
@@ -488,8 +499,8 @@ $config['compress_output'] = FALSE;
 | helper' page of the user guide for information regarding date handling.
 |
 */
-$config['time_reference'] = 'local';
-
+$config['time_reference'] = 'UP7';
+date_default_timezone_set('Asia/Jakarta');
 /*
 |--------------------------------------------------------------------------
 | Rewrite PHP Short Tags
