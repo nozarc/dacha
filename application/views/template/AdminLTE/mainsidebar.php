@@ -34,7 +34,7 @@
       </a>
       <ul class="treeview-menu">
         <li class="<?php echo !empty($sidebar['child']['user'])?$sidebar['child']['user']:null; ?>"><a href="<?php echo base_url('hotspot/user'); ?>"><i class="fa fa-circle-o"></i> <span>User</span></a></li>
-        <li class="<?php echo !empty($sidebar['child']['user_profile'])?$sidebar['child']['user_profile']:null; ?>"><a href="<?php echo base_url('hotspot/user'); ?>"><i class="fa fa-circle-o"></i> <span>User Profile</span><span class="label pull-right bg-green">Coming Soon</span></a></li>
+        <li class="<?php echo !empty($sidebar['child']['user_profile'])?$sidebar['child']['user_profile']:null; ?>"><a href="<?php echo base_url('hotspot/user/profile'); ?>"><i class="fa fa-circle-o"></i> <span>User Profile</span></a></li>
         <li class="<?php echo !empty($sidebar['child']['active_users'])?$sidebar['child']['active_users']:null; ?>"><a href="<?php echo base_url('hotspot/user'); ?>"><i class="fa fa-circle-o"></i> <span>Active User</span><span class="label pull-right bg-green">Coming Soon</span></a></li>
       </ul>
     </li>

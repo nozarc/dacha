@@ -32,7 +32,7 @@ class Ajax extends CI_Controller
 			$input['limit-uptime']=ros_limit($input['limit-uptime']);
 			$result['result']=$this->routerOs->hotspot_user_add($input);
 			if (!empty($result['result']['limit-uptime'])) {
-				$result['result']['limit-uptime']=ros_uptime($result['result']['limit-uptime']);
+				$result['result']['limituptime']=ros_uptime($result['result']['limit-uptime']);
 			}
 			$result['result']['uptime']=ros_uptime($result['result']['uptime']);
 		}
@@ -50,7 +50,7 @@ class Ajax extends CI_Controller
 			$input['limit-uptime']=ros_limit($input['limit-uptime']);
 			$result['result']=$this->routerOs->hotspot_user_edit($input);
 			if (!empty($result['result']['limit-uptime'])) {
-				$result['result']['limit-uptime']=ros_uptime($result['result']['limit-uptime']);
+				$result['result']['limituptime']=ros_uptime($result['result']['limit-uptime']);
 			}
 			$result['result']['uptime']=ros_uptime($result['result']['uptime']);
 			$result['debug']=$input;

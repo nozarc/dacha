@@ -40,7 +40,7 @@
               <table id="users" class="table table-bordered table-striped dt-responsive" >
                 <thead>
                   <tr>
-                    <th></th>
+                    <th><input type="checkbox" id="checkAll"></th><!--create check all-->
                     <th>No.</th>
                     <th>Username</th>
                     <th>Uptime</th>
@@ -54,7 +54,7 @@
                   foreach ($hs_users as $ukey => $uval) {
                   ?>
                   <tr id="row<?php echo $uval['.id'];?>">
-                    <td><input type="checkbox" name="user[]" value="<?php echo $uval['.id'];?>"></td>
+                    <td><input class="inpcheck" type="checkbox" name="user[]" value="<?php echo $uval['.id'];?>"></td>
                     <td><?php echo $ukey+1; ?></td>
                     <td><?php echo $uval['name']; ?></td>
                     <td><?php echo ros_uptime($uval['uptime']); ?></td>
@@ -523,7 +523,7 @@
         data: new FormData(this),
       })
       .done(function(edRes) {
-        
+        console.log(edRes);
         thisRow=usersTable.row($('tr#row'+edRes.result.id));
         thisRow.data([thisRow.data()[0],thisRow.data()[1],edRes.result.name,edRes.result.uptime,checkUsed(edRes.result['bytes-in'])+'(U) '+checkUsed(edRes.result['bytes-out'])+'(D) '+checkUsed(Number(edRes.result['bytes-in'])+Number(edRes.result['bytes-in']))+'(T)',edRes.result.profile,generateBtn(edRes.result.id)]).draw(false);
         $(editBtn).find('span').removeClass('fa-refresh fa-spin');
@@ -604,6 +604,7 @@
           function(bulkAddRes){
             usersTable.row.add([generateCheckbox(bulkAddRes.result.id),usersTable.rows().data().length+1,bulkAddRes.result.name,'00:00:00'/*need to improve this*/, checkUsed(bulkAddRes.result['bytes-in'])+'(U) '+checkUsed(bulkAddRes.result['bytes-out'])+'(D) '+checkUsed(Number(bulkAddRes.result['bytes-in'])+Number(bulkAddRes.result['bytes-in']))+'(T)',bulkAddRes.result.profile,generateBtn(bulkAddRes.result.id)]).draw(false);
             usersTable.page('last').draw(false);
+            console.log(bulkAddRes);
             $('td:contains('+bulkAddRes.result.name+')').parent().attr('id', 'row'+bulkAddRes.result.id); //make it match by id
             usersTable.order(1,'asc').draw(false);
             $('#modals').append(generateModal(bulkAddRes));

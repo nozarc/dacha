@@ -33,11 +33,24 @@ class RouterOs extends CI_Model
 		$this->session->set_userdata('routeros_data',$routeros_data);
 		return $this->routeros_api->connect($ip,$username,$password);
 	}
-	public function debug($param1=null)
+	public function debug($param1=null,$mode=1)
 	{
 		if ($param1!=null) {
 			$this->connect($this->session->userdata('routeros_data'));
-			return $this->routeros_api->comm($param1);
+			switch ($mode) {
+				case 1:
+					return $this->routeros_api->comm($param1);
+					break;
+				case 2:
+					$this->routeros_api->write($param1);
+					$read=$this->routeros_api->read(false);
+					return $read;//$this->routeros_api->parseResponse($read);
+					break;
+				case 3:
+					$this->routeros_api->write($param1);
+					return $this->routeros_api->read();
+					break;
+			}
 		}
 	}
 	public function get_resource($param1='all')
@@ -103,11 +116,21 @@ class RouterOs extends CI_Model
 		$this->connect($this->session->userdata('routeros_data'));
 		switch ($act) {
 			case 'show_all':
-				$hs_user_profiles=$this->routeros_api->comm('/ip/hotspot/user/profile/print');
+				$this->routeros_api->write('/ip/hotspot/user/profile/print');
+				$read=$this->routeros_api->read(false);
+				$hs_user_profiles=$this->routeros_api->parseResponse($read);
+			//	$hs_user_profiles=$this->routeros_api->comm('/ip/hotspot/user/profile/print');
 				foreach ($hs_user_profiles as $hsupkey => $hsupval) {
 					$newkey=ros_id($hsupval['.id']);
 					$result[$newkey]=$hsupval;
 					$result[$newkey]['.id']=$newkey;
+					if (!empty($hsupval['on-login'])) {
+						preg_match('/(\d+[wd] )?(..):(..):(..)/', $hsupval['on-login'],$valid);
+						$result[$newkey]['validity']=$valid[0];
+					}
+					else{
+						$result[$newkey]['validity']='0';
+					}
 				}
 				return $result;
 				break;

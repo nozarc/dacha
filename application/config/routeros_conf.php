@@ -15,12 +15,14 @@ $config['routeros_conf']=array(
 						);
 
 $config['limit-uptime']=array(							//this config used for add and edit user form
+						'6h'		=>'6 Hours',
 						'1d'		=>'1 Day',
 						'2d'		=>'2 Days',
 						'1w'		=>'1 Week',
 						'4w2d'		=>'1 Month',
 						'0'			=>'Unlimited'
 							);
+$config['valid-until']=&$config['limit-uptime'];
 $config['dacha']=array(
 					'version'	=>'0.1-beta'
 						);

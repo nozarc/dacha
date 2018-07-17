@@ -21,21 +21,33 @@ class Hotspot extends CI_Controller
 			redirect('');
 		}
 	}
-	public function user($param1='')
+	public function user($param1='list')
 	{
 		$data=$this->data;
-		$data['sidebar']['child']['user']='active';
-		$data['hs_users']=$this->routerOs->hotspot_user_show();
-	//	$data['debug']['hs_users']=$data['hs_users'];
-		$data['hs_user_profiles']=$this->routerOs->hotspot_user_profile();
-		$this->form_validation->set_rules('bulk_act','Bulk Action','required|alpha');
-		if ($this->form_validation->run()) {
-			$userIds=$this->input->post('user',true);
-			foreach ($userIds as $idkey => $idval) {
-				$data['debug']['deleted'][]=$this->routerOs->hotspot_user_delete($idval);
-			}
-			redirect('hotspot/user');
+		switch ($param1) {
+			case 'list':
+				$data['sidebar']['child']['user']='active';
+				$data['hs_users']=$this->routerOs->hotspot_user_show();
+			//	$data['debug']=$data['hs_users'];
+				$data['hs_user_profiles']=$this->routerOs->hotspot_user_profile();
+				$this->form_validation->set_rules('bulk_act','Bulk Action','required|alpha');
+				if ($this->form_validation->run()) {
+					$userIds=$this->input->post('user',true);
+					foreach ($userIds as $idkey => $idval) {
+						$this->routerOs->hotspot_user_delete($idval);
+					}
+					redirect('hotspot/user');
+				}
+				$this->template->display('hs_users',$data);
+				break;
+			case 'profile':
+				$data['hs_user_profiles']=$this->routerOs->hotspot_user_profile();
+				$data['validUntil']=$this->config->item('valid-until');
+				$data['debug'][]=$data['hs_user_profiles'];
+				$data['debug'][]=$data['validUntil'];
+				$data['debug'][]=ros_uptime('6h');
+				$this->template->display('hs_uprofile',$data);
+				break;
 		}
-		$this->template->display('hotspot',$data);
 	}
 }
