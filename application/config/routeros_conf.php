@@ -11,7 +11,7 @@ $config['routeros_conf']=array(
 						'address'	=>'192.168.2.1',	//you can fill it by ip address or a domain name of your mikrotik
 						'port'		=>8728,				//default port for api, (default 8729 for api-ssl)
 						'username'	=>'admin',
-						'password'	=>'ruvaak1knight'
+						'password'	=>''
 						);
 
 $config['limit-uptime']=array(							//this config used for add and edit user form
