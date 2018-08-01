@@ -24,5 +24,5 @@ $config['limit-uptime']=array(							//this config used for add and edit user fo
 							);
 $config['valid-until']=&$config['limit-uptime'];
 $config['dacha']=array(
-					'version'	=>'0.1-beta'
+					'version'	=>'0.2-beta'
 						);

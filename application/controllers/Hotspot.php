@@ -16,6 +16,7 @@ class Hotspot extends CI_Controller
 		$data['limituptime']=$this->config->item('limit-uptime');
 		//data
 		$data['sidebar']['parent']['hotspot']='active';
+	//	$data['reminder']='hapus modal ketika data terhapus';
 		$this->data=$data;
 		if (!$this->access->is_login()) {
 			redirect('');
@@ -28,7 +29,6 @@ class Hotspot extends CI_Controller
 			case 'list':
 				$data['sidebar']['child']['user']='active';
 				$data['hs_users']=$this->routerOs->hotspot_user_show();
-			//	$data['debug']=$data['hs_users'];
 				$data['hs_user_profiles']=$this->routerOs->hotspot_user_profile();
 				$this->form_validation->set_rules('bulk_act','Bulk Action','required|alpha');
 				if ($this->form_validation->run()) {
@@ -41,12 +41,23 @@ class Hotspot extends CI_Controller
 				$this->template->display('hs_users',$data);
 				break;
 			case 'profile':
+				$data['sidebar']['child']['user_profile']='active';
 				$data['hs_user_profiles']=$this->routerOs->hotspot_user_profile();
 				$data['validUntil']=$this->config->item('valid-until');
-				$data['debug'][]=$data['hs_user_profiles'];
-				$data['debug'][]=$data['validUntil'];
-				$data['debug'][]=ros_uptime('6h');
+				$this->form_validation->set_rules('bulk_act','Bulk Action','required|alpha');
+				if ($this->form_validation->run()) {
+					$userIds=$this->input->post('uprofile',true);
+					foreach ($userIds as $idkey => $idval) {
+						$this->routerOs->hotspot_user_profile_delete($idval);
+					}
+					redirect('hotspot/user/profile');
+				}
 				$this->template->display('hs_uprofile',$data);
+				break;
+			case 'active':
+				$data['sidebar']['child']['active_users']='active';
+				$data['hs_active_users']=$this->routerOs->hotspot_user_active();
+				$this->template->display('hs_active_users',$data);
 				break;
 		}
 	}

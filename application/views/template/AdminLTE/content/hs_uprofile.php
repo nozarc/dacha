@@ -34,7 +34,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        <form method="post" id="hs_uprofile_form" action="<?php echo current_url();?>">
+        <form method="post" id="hs_uprofile_bulk" action="<?php echo current_url();?>">
           <div class="box-body">
             <div class="table-responsive">
               <table id="userProfiles" class="table table-bordered table-striped dt-responsive" >
@@ -68,6 +68,7 @@
                     </td>
                   </tr>
                   <?php
+                $no++;
                 }
                 ?>
                 </tbody>
@@ -102,11 +103,11 @@
                 <h4 class="modal-title">Are you sure?</h4>
               </div>
               <div class="modal-body">
-                Are you sure to delete selected users?
+                Are you sure to delete selected profiles?
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss='modal'><span class="fa fa-times"></span> Cancel</button>
-                <button type="submit" form="hs_users_form" class="btn btn-outline btn-danger pull-right"><span class="fa fa-trash"></span> Delete</button>
+                <button type="submit" form="hs_uprofile_bulk" class="btn btn-outline btn-danger pull-right"><span class="fa fa-trash"></span> Delete</button>
               </div>
             </div>
           </div>
@@ -121,11 +122,88 @@
                 <h4 class="modal-title">Add new user profile</h4>
               </div>
               <div class="modal-body">
-                lorem ipsum sir dolor amet-amet
+                <form class="form-horizontal" id="hs_userprofile_form">
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Name</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <input placeholder="Name" required class="form-control input-sm" type="text" name="name">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Shared Users</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <input value="1" class="form-control input-sm" placeholder="Shared Users" type="number" min="1" name="shared-users">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Keepalive Timeout</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <input class="form-control input-sm" value="00:02:00" placeholder="Keepalive Timeout" type="time" step="1" name="keepalive-timeout">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Users Validity</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <select onchange="updateScript(this)" name="users-validity"  class="form-control input-sm">
+                            <?php
+                            foreach ($validUntil as $vkey => $vval) {
+                              ?>
+                              <option value="<?php echo ros_limit($vkey);?>" <?php echo $vkey==0?'selected':null;?>><?php echo $vval; ?></option>
+                              <?php
+                            }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Rate Limit</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <input type="text" name="rate-limit" class="form-control input-sm" placeholder="780k/9M 0/0 0/0 0/0 3 256k/832k" >
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-5">Transparent Proxy</label>
+                        <div class="col-md-7 col-sm-7 col-xs-7">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="transparent-proxy" value="yes">Yes
+                            </label>
+                            <label>
+                              <input type="radio" checked name="transparent-proxy" value="no">No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label class="col-md-12 col-sm-12 col-xs-12">On Login Script</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <textarea name="on-login" placeholder="On Login Script" class="form-control" rows="3"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label class="col-md-12 col-sm-12 col-xs-12">On Logout Script</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <textarea name="on-logout" placeholder="On Logout Script" class="form-control" rows="3"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss='modal'><span class="fa fa-times"></span> Cancel</button>
-                <button type="submit" form="hs_users_form" class="btn btn-outline btn-danger pull-right"><span class="fa fa-trash"></span> Delete</button>
+                <button type="submit" form="hs_userprofile_form" class="btn btn-outline btn-success pull-right"><span class="fa fa-plus"></span> Add</button>
               </div>
             </div>
           </div>
@@ -133,7 +211,7 @@
         <?php
         foreach ($hs_user_profiles as $mUPkey => $mUPval) {
         ?>
-        <!-- user details modal-->
+        <!-- user profile detail modal-->
         <div class="modal modal-info fade" id="upMdetail_<?php echo $mUPval['.id'];?>">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -240,8 +318,8 @@
             </div>
           </div>
         </div>
-        <!--./user details modal-->
-        <!-- edit user modal-->
+        <!--./user profile detail modal-->
+        <!-- edit user profile modal-->
         <div class="modal modal-success fade" id="upMedit_<?php echo $mUPval['.id'];?>">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -307,7 +385,7 @@
                         <div class="col-md-7 col-sm-7 col-xs-7">
                           <div class="radio">
                             <label>
-                              <input type="radio" name="transparent-proxy" value="yes" <?php echo ($mUPval['transparent-proxy']=='true')?'checked':null;?> >Yes
+                              <input type="radio" name="transparent-proxy" value="yes" <?php echo ($mUPval['transparent-proxy']=='true')?'checked':null;?>>Yes
                             </label>
                             <label>
                               <input type="radio" name="transparent-proxy" value="no" <?php echo ($mUPval['transparent-proxy']=='false')?'checked':null;?>>No
@@ -345,8 +423,8 @@
             </div>
           </div>
         </div>
-        <!--./edit user modal-->
-        <!--delete user modal-->
+        <!--./edit user profile modal-->
+        <!--delete user profile modal-->
         <div class="modal modal-danger fade" id="upMdelete_<?php echo $mUPval['.id'];?>">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -366,7 +444,7 @@
             </div>
           </div>
         </div>
-        <!--./delete user modal-->
+        <!--./delete user profile modal-->
         <?php
         }
         ?>
@@ -391,6 +469,7 @@
       'lengthMenu'  : [[10, 25, 50, -1], [10, 25, 50, "All"]],
     //  'processing'  : true
     });
+    uProfileTable=$('#userProfiles').DataTable();
   });
   //update validity script
   function updateScript(validity) {
@@ -403,18 +482,15 @@
       if (onlogin.search(findParam)>-1) {
         var newOnlogin=onlogin.replace(findParam, newVal);
         target1.val(newOnlogin);
-        console.log('1'+newOnlogin);
       }
       else{
         target1.val(onlogin+newVal);
-        console.log('3'+onlogin+newVal);
       }
     }
     else{
       if (onlogin.search(findParam)>-1) {
         var newOnlogin=onlogin.replace(findParam,'');
         target1.val(newOnlogin);
-        console.log('1'+newOnlogin);
       }
     }
   }
@@ -427,11 +503,14 @@
     $.post('<?php echo base_url('ajax/deleteUProfile');?>', {id: $(dat).data('delete-uid')},
       function(deleted) {
         $('.modal').modal('hide');
-        usersTable.row($('tr#row'+deleted.result.id)).remove().draw(false);
+        uProfileTable.row($('tr#row'+deleted.result.id)).remove().draw(false);
         $('modal').on('hidden.bs.modal',function() {
           $(dat).find('span').removeClass('fa-refresh fa-spin');
           $(dat).find('span').addClass('fa-trash');
-        })
+          $('div#upMedit_'+deleted.result.id).remove();
+          $('div#upMdetail_'+deleted.result.id).remove();
+          $('div#upMdelete_'+deleted.result.id).remove();
+        });
       },'json'
     );
   }
@@ -452,9 +531,16 @@
         data: new FormData(this),
       })
       .done(function(edRes) {
-        
-        thisRow=usersTable.row($('tr#row'+edRes.result.id));
-        thisRow.data([thisRow.data()[0],thisRow.data()[1],edRes.result.name,edRes.result.uptime,checkUsed(edRes.result['bytes-in'])+'(U) '+checkUsed(edRes.result['bytes-out'])+'(D) '+checkUsed(Number(edRes.result['bytes-in'])+Number(edRes.result['bytes-in']))+'(T)',edRes.result.profile,generateBtn(edRes.result.id)]).draw(false);
+        debug=edRes;
+        thisRow=uProfileTable.row($('tr#row'+edRes.result.id));
+        thisRow.data(
+          [thisRow.data()[0],
+          thisRow.data()[1],
+          edRes.result['name'],
+          edRes.result['shared-users'],
+          edRes.result['rate-limit']?edRes.result['rate-limit']:'',
+          generateBtn(edRes.result.id,'hs_uprofile')]
+        ).draw(false);
         $(editBtn).find('span').removeClass('fa-refresh fa-spin');
         $(editBtn).find('span').addClass('fa-check');
         $('.modal').modal('hide');
@@ -464,8 +550,9 @@
           $('div#upMedit_'+edRes.result.id).remove();
           $('div#upMdetail_'+edRes.result.id).remove();
           $('div#upMdelete_'+edRes.result.id).remove();
-          $('#modals').append(generateModal(edRes));
+          $('#modals').append(generateModal(edRes,'hs_uprofile'));
         })
+        
       })
       .fail(function() {
         console.log("error on view");
@@ -475,13 +562,18 @@
   }
   //./edit user profile
   $(document).ready(function () {
-    usersTable=$('#userProfiles1').DataTable();
-
     // add user profile
-    $('#adduser').submit(function (d) {
+    $('#hs_userprofile_form').submit(function (d) {
         d.preventDefault();
-        $('#addProgress').fadeIn('slow');
+        debug=this;
+        var button=$(this).parents('div.modal').find('button[form='+$(this).attr('id')+']');
+        var buttonspan=button.find('span');
+        var inputs=$(this).find(':input');
+        buttonspan.removeClass('fa-plus');
+        buttonspan.addClass('fa-spin fa-refresh')
+        
         $.ajax({
+          cache: false,
           contentType: false,
           processData: false,
           dataType: 'json',
@@ -489,19 +581,49 @@
           type: 'POST',
           data:new FormData(this),
           success:function(addRes) {
-            $('#addProgress').fadeOut('slow');
-            usersTable.row.add([generateCheckbox(addRes.result.id),usersTable.rows().data().length+1,addRes.result.name,'00:00:00'/*need to improve this*/,checkUsed(addRes.result['bytes-in'])+'(U) '+checkUsed(addRes.result['bytes-out'])+'(D) '+checkUsed(Number(addRes.result['bytes-in'])+Number(addRes.result['bytes-in']))+'(T)',addRes.result.profile,generateBtn(addRes.result.id)]).draw(false);
-            usersTable.order(1,'asc').draw(false);
-            usersTable.page('last').draw(false);
+            debug=addRes;
+            buttonspan.removeClass('fa-spin fa-refresh');
+            buttonspan.addClass('fa-check');
+
+            //add table row
+            //*
+            uProfileTable.row.add([
+              generateCheckbox(addRes.result.id,'hs_uprofile'),
+              uProfileTable.rows().data().length+1,
+              addRes.result.name,
+              addRes.result['shared-users'],
+              addRes.result['rate-limit']?addRes.result['rate-limit']:'',
+              generateBtn(addRes.result.id,'hs_uprofile')
+              ]).draw(false);
+            uProfileTable.order(1,'asc').draw(false);
+            uProfileTable.page('last').draw(false);
             $('td:contains('+addRes.result.name+')').parent().attr('id', 'row'+addRes.result.id);
-            $('#modals').append(generateModal(addRes));
+            //*/
+            //./add table row
+            //add modal
+            $('#modals').append(generateModal(addRes,'hs_uprofile'));
+            //./add modal
+            $('.modal').modal('hide');
+            $('.modal').on('hidden.bs.modal', function() {
+              buttonspan.removeClass('fa-check');
+              buttonspan.addClass('fa-plus');
+              $(inputs[0]).val('');
+              $(inputs[1]).val(1);
+              $(inputs[2]).val('00:02:00');
+              $(inputs[3]).val(0);
+              $(inputs[4]).val('');
+              $(inputs[7]).val('');
+              $(inputs[8]).val('');
+            });
           },
           error:function(addErr,status,xhr) {
             console.log('err->');
+            console.log(addErr);
             console.log(status);
             console.log(xhr);
           }
         });
+        
       });
     //./add user profile
     //bulk action

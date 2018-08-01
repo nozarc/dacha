@@ -6,6 +6,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <?php echo $_jscript; ?>
 <?php
+  echo isset($reminder)?"<pre>$reminder</pre>":null;
 	if (isset($debug)) {
 		echo "<pre>";
 		print_r($debug);

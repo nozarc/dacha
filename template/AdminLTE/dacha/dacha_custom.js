@@ -3,7 +3,8 @@
 *
 *
 */
-debug='';
+dachajsdebug='';
+console.log('dacha custom js is loaded');
 // formatBytes 
 //original source by https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function byte_format(a,b){
@@ -56,7 +57,14 @@ function checkUptime(uptime) {
 	  return '00:00:00';
 	}
 }
-
+function generalStrCheck(general) {
+	if (general) {
+		return general;
+	}
+	else {
+		return '';
+	}
+}
 // generator
     function generateCheckbox(id,param1='hs_users') {
     	switch (param1) {
@@ -83,7 +91,7 @@ function checkUptime(uptime) {
   		break;
       }
       return ''
-		+'<div class="btn btn-group">'
+		+'<div class="btn-group">'
 			+'<button class="btn btn-xs btn-info" title="Detail" type="button" data-toggle="modal" data-target="'+modalDetail+id+'" >'
 				+'<span class="fa fa-eye"></span>'
 			+'</button>'
@@ -107,8 +115,8 @@ function checkUptime(uptime) {
 		    	var checkLim=[];
 		    	data['profile']=data.hotspot.uprofile;
 		    	data['limituptime']=data.hotspot.limituptime;
-		    	function compSelect(param1,param2) {
-		    		if (param1==param2) {
+		    	function compSelect(cSparam1,cSparam2) {
+		    		if (cSparam1==cSparam2) {
 		    			return 'selected';
 		    		}
 		    		return '';
@@ -313,7 +321,258 @@ function checkUptime(uptime) {
 				+'</div>';
     			break;
     		case 'hs_uprofile':
-
+    			console.log('hs_uprofile is called');
+    			var optValidUntil='';
+    			var usersValidityDetail='';
+    			var checkVld=[];
+    			var transProxyYes='';
+    			var transProxyNo='';
+		        for(var validkey in data.validUntil){
+		        	if(validkey==data.result.validity){
+		        		usersValidityDetail=data.validUntil[validkey];
+		        	}
+		        }
+                for(var validk in data.validUntil) {
+                	checkVld[validk]=(validk==data.result['validity'])?'selected':'';
+                  	optValidUntil+='<option value="'+validk+'" '+checkVld[validk]+' >'+data.validUntil[validk]+'</option>';
+                }
+                switch (data.result['transparent-proxy']) {
+                	case 'true':
+                		transProxyYes='checked'
+                		break;
+                	case 'false':
+                		transProxyNo='checked';
+                		break;
+                	case 'yes':
+                		transProxyYes='checked'
+                		break;
+                	case 'no':
+                		transProxyNo='checked';
+                		break;
+                }
+    			return ''
+    			+'<!-- user details modal-->'
+		        +'<div class="modal modal-info fade" id="upMdetail_'+data.result['id']+'">'
+		          +'<div class="modal-dialog modal-lg">'
+		            +'<div class="modal-content">'
+		              +'<div class="modal-header">'
+		                +'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+		                  +'<span aria-hidden="true">&times;</span>'
+		                +'</button>'
+		                +'<h4 class="modal-title">'+data.result.name+'</h4>'
+		              +'</div>'
+		              +'<div class="modal-body">'
+		                +'<div class="row">'
+		                  +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">ID</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['id']
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5  col-sm-5 col-xs-12">Profil Name</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['name']
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Shared Users</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['shared-users']
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Address Pool</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+generalStrCheck(data.result['address-pool'])
+		                      +'</div>'
+		                    +'</div>'///
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Rate Limit</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+generalStrCheck(data.result['rate-limit'])
+		                      +'</div>'
+		                    +'</div>'
+		                  +'</div>'
+		                  +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Users Validity</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+usersValidityDetail
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Keepalive Timeout</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['rosuptime-keepalive-timeout']//perhatikan ros uptime
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5  col-sm-5 col-xs-12">Status Autorefresh</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['rosuptime-status-autorefresh']//perhatikan ros uptime
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Add MAC Cookie</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['add-mac-cookie']
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="row">'
+		                      +'<div class="col-md-5 col-sm-5 col-xs-12">Transparent Proxy</div>'
+		                      +'<div class="col-md-7 col-sm-7 col-xs-12">'
+		                        +': '+data.result['transparent-proxy']
+		                      +'</div>'
+		                    +'</div>'
+		                  +'</div>'
+		                +'</div>'
+		                +'<hr>'
+		                +'<div class="row">'
+		                  +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                    +'<div class="col-md-12 col-sm-12 col-xs-12">On Login:'
+		                    +'</div>'
+		                    +'<div class="col-md-12 col-sm-12 col-xs-12">'
+		                      +'<textarea disabled class="form-control" rows="3">'+generalStrCheck(data.result['on-login'])+'</textarea>'//nyampek sini
+		                    +'</div>'
+		                  +'</div>'
+		                  +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                    +'<div class="col-md-12 col-sm-12 col-xs-12">On Logout:'
+		                    +'</div>'
+		                    +'<div class="col-md-12 col-sm-12 col-xs-12">'
+		                      +'<textarea disabled class="form-control" rows="3">'+generalStrCheck(data.result['on-logout'])+'</textarea>'
+		                    +'</div>'
+		                  +'</div>'
+		                +'</div>'
+		              +'</div>'
+		              +'<div class="modal-footer">'
+		                +'<button type="button" class="btn btn-outline pull-right" data-dismiss="modal"><span class="fa fa-times"></span> Close</button>'
+		              +'</div>'
+		            +'</div>'
+		          +'</div>'
+		        +'</div>'
+		        +'<!--./user details modal-->'
+		        +'<!-- edit user modal-->'
+		        +'<div class="modal modal-success fade" id="upMedit_'+data.result['id']+'">'
+		          +'<div class="modal-dialog modal-lg">'
+		            +'<div class="modal-content">'
+		              +'<div class="modal-header">'
+		                +'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+		                  +'<span aria-hidden="true">&times;</span>'
+		                +'</button>'
+		                +'<h4 class="modal-title">Editing Profile '+data.result['name']+'</h4>'
+		              +'</div>'
+		              +'<div class="modal-body">'
+		                +'<form class="form-horizontal" id="formEdit'+data.result['id']+'">'
+		                  +'<div class="row">'
+		                    +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">ID</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<input class="form-control input-sm" type="text" disabled value="'+data.result['id']+'">'
+		                          +'<input type="hidden" name="id" value="'+data.result['id']+'">'
+		                        +'</div>'
+		                      +'</div>'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Name</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<input placeholder="Name" class="form-control input-sm" type="text" name="name" value="'+data.result['name']+'">'
+		                        +'</div>'
+		                      +'</div>'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Shared Users</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<input class="form-control input-sm" placeholder="Shared Users" type="number" min="1" name="shared-users"  value="'+data.result['shared-users']+'">'
+		                        +'</div>'
+		                      +'</div>'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Keepalive Timeout</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<input class="form-control input-sm" placeholder="Keepalive Timeout" type="time" step="1" name="keepalive-timeout"  value="'+data.result['rosuptime-keepalive-timeout']+'">' //cek ros uptime
+		                        +'</div>'
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Users Validity</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<select onchange="updateScript(this)" name="users-validity"  class="form-control input-sm">'
+		                          	+optValidUntil
+		                          +'</select>'
+		                        +'</div>'
+		                      +'</div>'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Rate Limit</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<input type="text" name="rate-limit" class="form-control input-sm" placeholder="Rate Limit" value="'+generalStrCheck(data.result['rate-limit'])+'">'
+		                        +'</div>'
+		                      +'</div>'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-5 col-sm-5 col-xs-5">Transparent Proxy</label>'
+		                        +'<div class="col-md-7 col-sm-7 col-xs-7">'
+		                          +'<div class="radio">'
+		                            +'<label>'
+		                              +'<input type="radio" name="transparent-proxy" value="yes" '+transProxyYes+'>Yes'
+		                            +'</label>'
+		                            +'<label>'
+		                              +'<input type="radio" name="transparent-proxy" value="no" '+transProxyNo+'>No'
+		                            +'</label>'
+		                          +'</div>'
+		                        +'</div>'
+		                      +'</div>'
+		                    +'</div>'
+		                  +'</div>'
+		                  +'<hr>'
+		                  +'<div class="row">'
+		                    +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-12 col-sm-12 col-xs-12">On Login Script</label>'
+		                        +'<div class="col-md-12 col-sm-12 col-xs-12">'
+		                          +'<textarea name="on-login" placeholder="On Login Script" class="form-control" rows="3">'+generalStrCheck(data.result['on-login'])+'</textarea>'
+		                        +'</div>'
+		                      +'</div>'
+		                    +'</div>'
+		                    +'<div class="col-md-6 col-sm-6 col-xs-12">'
+		                      +'<div class="form-group">'
+		                        +'<label class="control-label col-md-12 col-sm-12 col-xs-12">On Logout Script</label>'
+		                        +'<div class="col-md-12 col-sm-12 col-xs-12">'
+		                          +'<textarea name="on-logout" placeholder="On Logout Script" class="form-control" rows="3">'+generalStrCheck(data.result['on-logout'])+'</textarea>'
+		                        +'</div>'
+		                      +'</div>'
+		                    +'</div>'
+		                  +'</div>'
+		                +'</form>'
+		              +'</div>'
+		              +'<div class="modal-footer">'
+		                +'<button type="button" class="btn btn-outline pull-left" data-dismiss="modal"><span class="fa fa-times"></span> Cancel</button>'
+		                +'<button type="button" onclick="editUProfile(this)" form="formEdit'+data.result['id']+'" class="btn btn-outline btn-success pull-right"><span class="fa fa-pencil"></span> Submit</button>'
+		              +'</div>'
+		            +'</div>'
+		          +'</div>'
+		        +'</div>'
+		        +'<!--./edit user modal-->'
+		        +'<!--delete user modal-->'
+		        +'<div class="modal modal-danger fade" id="upMdelete_'+data.result['id']+'">'
+		          +'<div class="modal-dialog">'
+		            +'<div class="modal-content">'
+		              +'<div class="modal-header">'
+		                +'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+		                  +'<span aria-hidden="true">&times;</span>'
+		                +'</button>'
+		                +'<h4 class="modal-title">Delete '+data.result['name']+'?</h4>'
+		              +'</div>'
+		              +'<div class="modal-body">'
+		                +'Are you sure to delete '+data.result['name']+' from server?'
+		              +'</div>'
+		              +'<div class="modal-footer">'
+		                +'<button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss="modal"><span class="fa fa-times"></span> Cancel</button>'
+		                +'<button type="button" data-delete-uid="'+data.result['id']+'" onclick="delUProf(this);" class="btn btn-outline btn-danger btnDel"><span class="fa fa-trash"></span> Delete</button>'
+		              +'</div>'
+		            +'</div>'
+		          +'</div>'
+		        +'</div>'
+		        +'<!--./delete user modal-->';
     			break;
     	}
     }

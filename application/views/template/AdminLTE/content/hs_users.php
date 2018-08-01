@@ -66,7 +66,7 @@
                     </td>
                     <td><?php echo !empty($uval['profile'])?$uval['profile']:null; ?></td>
                     <td>
-                      <div class="btn btn-group">
+                      <div class="btn-group">
                         <button class="btn btn-xs btn-info" title="Detail" type="button" data-toggle='modal' data-target='#uMdetail_<?php echo $uval['.id'];?>' ><span class="fa fa-eye"></span> </button>
                         <button class="btn btn-xs btn-success" type="button" title="Edit" data-toggle='modal' data-target='#uMedit_<?php echo $uval['.id'];?>' ><span class="fa fa-pencil"></span> </button>
                         <button class="btn btn-xs btn-danger" type="button" title="Delete" data-toggle='modal' data-target='#uMdelete_<?php echo $uval['.id'];?>'><span class="fa fa-trash"></span> </button>
@@ -502,6 +502,9 @@
         $('modal').on('hidden.bs.modal',function() {
           $(dat).find('span').removeClass('fa-refresh fa-spin');
           $(dat).find('span').addClass('fa-trash');
+          $('div#uMedit_'+deleted.result.id).remove();
+          $('div#uMdetail_'+deleted.result.id).remove();
+          $('div#uMdelete_'+deleted.result.id).remove();
         })
       },'json'
     );
@@ -524,7 +527,7 @@
       })
       .done(function(edRes) {
         console.log(edRes);
-        thisRow=usersTable.row($('tr#row'+edRes.result.id));
+        var thisRow=usersTable.row($('tr#row'+edRes.result.id));
         thisRow.data([thisRow.data()[0],thisRow.data()[1],edRes.result.name,edRes.result.uptime,checkUsed(edRes.result['bytes-in'])+'(U) '+checkUsed(edRes.result['bytes-out'])+'(D) '+checkUsed(Number(edRes.result['bytes-in'])+Number(edRes.result['bytes-in']))+'(T)',edRes.result.profile,generateBtn(edRes.result.id)]).draw(false);
         $(editBtn).find('span').removeClass('fa-refresh fa-spin');
         $(editBtn).find('span').addClass('fa-check');

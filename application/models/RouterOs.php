@@ -66,14 +66,25 @@ class RouterOs extends CI_Model
 				break;
 		}
 	}
-	public function hotspot_user_active($act='show')
+	public function hotspot_user_active($act='show',$id=null)
 	{
 		$this->connect($this->session->userdata('routeros_data'));
 		switch ($act) {
 			case 'show':
-				return $this->routeros_api->comm('/ip/hotspot/active/print');
+				$active_users=$this->routeros_api->comm('/ip/hotspot/active/print');
+				$result=$active_users;
+				foreach ($active_users as $aukey => $auval) {
+					$result[$aukey]['.id']=ros_id($auval['.id']);
+				}
+				return $result;
 				break;
-			
+			case 'remove':
+				if ($id==null) {
+					return false;
+				}
+				$this->routeros_api->comm('/ip/hotspot/active/remove',array('.id'=>ros_id($id,'asterisk')));
+				return array('id'=>$id);
+				break;
 			default:
 				return false;
 				break;
@@ -111,31 +122,6 @@ class RouterOs extends CI_Model
 				break;
 		}
 	}
-	public function hotspot_user_profile($act='show_all')
-	{
-		$this->connect($this->session->userdata('routeros_data'));
-		switch ($act) {
-			case 'show_all':
-				$this->routeros_api->write('/ip/hotspot/user/profile/print');
-				$read=$this->routeros_api->read(false);
-				$hs_user_profiles=$this->routeros_api->parseResponse($read);
-			//	$hs_user_profiles=$this->routeros_api->comm('/ip/hotspot/user/profile/print');
-				foreach ($hs_user_profiles as $hsupkey => $hsupval) {
-					$newkey=ros_id($hsupval['.id']);
-					$result[$newkey]=$hsupval;
-					$result[$newkey]['.id']=$newkey;
-					if (!empty($hsupval['on-login'])) {
-						preg_match('/(\d+[wd] )?(..):(..):(..)/', $hsupval['on-login'],$valid);
-						$result[$newkey]['validity']=$valid[0];
-					}
-					else{
-						$result[$newkey]['validity']='0';
-					}
-				}
-				return $result;
-				break;
-		}
-	}
 	public function hotspot_user_add($input=null)
 	{
 		$result=false;
@@ -169,9 +155,91 @@ class RouterOs extends CI_Model
 		if (!empty($id)) {
 			$this->connect($this->session->userdata('routeros_data'));
 			$this->routeros_api->comm('/ip/hotspot/user/remove',array('.id'=>ros_id($id,'asterisk')));
-			return array('id'=>$id);
+			$result=array('id'=>$id);
+		}
+		return $result;
+	}
+	//./hotspot user stuff
+	//hotspot user profile stuff
+	public function hotspot_user_profile($act='show_all')
+	{
+		$this->connect($this->session->userdata('routeros_data'));
+		switch ($act) {
+			case 'show_all':
+				$this->routeros_api->write('/ip/hotspot/user/profile/print');
+				$read=$this->routeros_api->read(false);
+				$hs_user_profiles=$this->routeros_api->parseResponse($read);
+			//	$hs_user_profiles=$this->routeros_api->comm('/ip/hotspot/user/profile/print');
+				foreach ($hs_user_profiles as $hsupkey => $hsupval) {
+					$newkey=ros_id($hsupval['.id']);
+					$result[$newkey]=$hsupval;
+					$result[$newkey]['.id']=$newkey;
+					if (!empty($hsupval['on-login'])) {
+						preg_match('/(\d+[wd] )?(..):(..):(..)/', $hsupval['on-login'],$valid);
+						$result[$newkey]['validity']=$valid[0];
+					}
+					else{
+						$result[$newkey]['validity']='0';
+					}
+				}
+				return $result;
+				break;
 		}
 	}
+	public function hotspot_user_profile_add($input=null)
+	{
+		if (empty($input)) {
+			return false;
+		}
+		$this->connect($this->session->userdata('routeros_data'));
+		$add_id=$this->routeros_api->comm('/ip/hotspot/user/profile/add',$input);
+		$result=$this->routeros_api->comm('/ip/hotspot/user/profile/print',array('?.id'=>$add_id))[0];
+		$result['id']=ros_id($result['.id']);
+		if (!empty($result['on-login'])) {
+			preg_match('/(\d+[wd] )?(..):(..):(..)/', $result['on-login'],$valid);
+			$result['validity']=$valid[0];
+		}
+		else{
+			$result['validity']='0';
+		}
+		
+		$result['rosuptime-keepalive-timeout']=ros_uptime($result['keepalive-timeout']);
+		$result['rosuptime-status-autorefresh']=ros_uptime($result['status-autorefresh']);
+		return $result;
+	}
+	public function hotspot_user_profile_edit($input=null)
+	{
+		if (empty($input)) {
+			return false;
+		}
+		$this->connect($this->session->userdata('routeros_data'));
+		$input['.id']=ros_id($input['id'],'asterisk');
+		unset($input['id']);
+		$this->routeros_api->comm('/ip/hotspot/user/profile/set',$input);
+		$result=$this->routeros_api->comm('/ip/hotspot/user/profile/print',array('?.id'=>$input['.id']))[0];
+		$result['id']=ros_id($result['.id']);
+		if (!empty($result['on-login'])) {
+			preg_match('/(\d+[wd] )?(..):(..):(..)/', $result['on-login'],$valid);
+			$result['validity']=$valid[0];
+		}
+		else{
+			$result['validity']='0';
+		}
+		$result['rosuptime-keepalive-timeout']=ros_uptime($result['keepalive-timeout']);
+		$result['rosuptime-status-autorefresh']=ros_uptime($result['status-autorefresh']);
+		return $result;
+	}
+	public function hotspot_user_profile_delete($input=null)
+	{
+		if (empty($input)) {
+			return false;
+		}
+		$id=$input;
+		$this->connect($this->session->userdata('routeros_data'));
+		$this->routeros_api->comm('/ip/hotspot/user/profile/remove',array('.id'=>ros_id($id,'asterisk')));
+		return array('id'=>$id);
+	}
+	//./hotspot user profile stuff
 	public function interfaces($act='print')
 	{
 		$this->connect($this->session->userdata('routeros_data'));
