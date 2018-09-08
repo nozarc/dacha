@@ -18,8 +18,11 @@ class Logout extends CI_Controller
 	}
 	public function index()
 	{
-		@$this->access->logout();
+		$this->template->display('logout');
+	}
+	public function logout()
+	{
+		$this->access->logout();
 		redirect('');
 	}
-	
 }

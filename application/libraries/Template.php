@@ -28,7 +28,7 @@ class Template
 			$path[$pval]=base_url($path3);
 		}
 		$data['path']=$path;
-		if ($content!='login' && $content!='register') {
+		if ($content!='login' && $content!='logout' && $content!='register') {
 			$data['_content']=$this->ci->load->view('template/'.$template.'/content/'.$content,$data,true);
 			$data['_htmlhead']=$this->ci->load->view('template/'.$template.'/htmlhead',$data,true);
 			$data['_jscript']=$this->ci->load->view('template/'.$template.'/jscript',$data,true);
