@@ -87,7 +87,9 @@
               <div class="col-md-3">
                 <select name="bulk_act" class="form-control" id="bulk_act">
                   <option>Bulk Action</option>
+                  <option value="exportxls">Export as xls</option>
                   <option value="delete" >Delete</option>
+                  <option value="print" >Print Voucher (coming soon)</option>
                 </select>
               </div>
             </div>
@@ -110,6 +112,44 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss='modal'><span class="fa fa-times"></span> Cancel</button>
                 <button type="submit" form="hs_users_form" class="btn btn-outline btn-danger pull-right"><span class="fa fa-trash"></span> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal modal-info fade" id="mBulkPrint">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" class="fa fa-times"></span>
+                </button>
+                <h4 class="modal-title">Are you sure?</h4>
+              </div>
+              <div class="modal-body">
+                Are you sure to print vouchers for selected users?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss='modal'><span class="fa fa-times"></span> Cancel</button>
+                <button type="submit" form="hs_users_form" class="btn btn-outline btn-info pull-right"><span class="fa fa-print"></span> Print</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal modal-info fade" id="mBulkExport">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" class="fa fa-times"></span>
+                </button>
+                <h4 class="modal-title">Are you sure?</h4>
+              </div>
+              <div class="modal-body">
+                Are you sure to export selected users into a file?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-primary pull-left" data-dismiss='modal'><span class="fa fa-times"></span> Cancel</button>
+                <button type="submit" form="hs_users_form" class="btn btn-outline btn-info pull-right"><span class="fa fa-save"></span> Export</button>
               </div>
             </div>
           </div>
@@ -623,9 +663,17 @@
     //./add user
     //bulk action
     $('#bulk_act').change(function() {
-      if ($(this).val()=='delete') {
-        $('.modal#mBulkDelete').modal('show');$('.modal#mBulkDelete').modal('show');
-      };
+      switch ($(this).val()) {
+        case 'delete':
+          $('.modal#mBulkDelete').modal('show');
+          break;
+        case 'print':
+          alert('coming soon');//  $('.modal#mBulkPrint').modal('show');
+          break;
+        case 'exportxls':
+          $('.modal#mBulkExport').modal('show');
+          break;
+      }
     });
   });
 </script>

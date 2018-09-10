@@ -118,7 +118,13 @@ class RouterOs extends CI_Model
 				break;
 			
 			case 'id':
-				return $this->routeros_api->comm('/ip/hotspot/user/print',array('?.id'=>$id));
+				$hs_user=$this->routeros_api->comm('/ip/hotspot/user/print',array('?.id'=>ros_id($id,'asterisk')));
+				$result=$hs_user;
+				foreach ($hs_user as $hsukey => $hsuval) {
+					$newkey=ros_id($hsuval['.id']);
+					$result[$hsukey]['.id']=$newkey;
+				}
+				return $result[0];
 				break;
 		}
 	}
