@@ -6,12 +6,18 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <?php echo $_jscript; ?>
 <?php
+if ($_state=='development') {
   echo isset($reminder)?"<pre>$reminder</pre>":null;
-	if (isset($debug)) {
-		echo "<pre>";
-		print_r($debug);
-		echo "</pre>";
-	}
+  if (isset($debug)) {
+    echo "<pre>";
+    print_r($debug);
+    echo "</pre>";
+  }
+}
+elseif ($_state=='production') {
+  unset($reminder);
+  unset($debug);
+}
 ?>
 	<div class="wrapper">
 

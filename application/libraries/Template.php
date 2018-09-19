@@ -15,6 +15,7 @@ class Template
 	public function display($content,$data=null)
 	{
 		$template=$this->ci->config->item('template');
+		$data['_state']=$this->ci->config->item('state');
 		$data['sess']=$this->ci->session->userdata();
 		$data['version']=$this->ci->config->item('dacha')['version'];
 		$data['base_url']=$this->ci->config->item('base_url');
