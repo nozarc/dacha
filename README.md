@@ -5,7 +5,7 @@ Dacha is a web app with purpose to help mikrotik user managing their hotspot wit
 * Web Server with PHP7 or above (because i developed it under php7, it will be good if you want to test it to run under php5)
 
 ## Installation
-The installation process of this app is simple, we don't need to set up a database for this app, because this app is *database-less* (i hope it still database-less in the future). And i assume you have knowledge about webserver installation
+The installation process of this app is simple, we don't need to set up a database for this app, because this app is *database-less* (i hope it still database-less in the future) and this app features is still limited (far from mikrotik userman features). And i assume you have knowledge about webserver installation
 
 * clone this repository into your public_html or htdocs (if you are using xampp)
 * Edit this file
